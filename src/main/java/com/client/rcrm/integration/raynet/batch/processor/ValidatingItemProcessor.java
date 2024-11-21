@@ -5,16 +5,19 @@ import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidPhoneNumberException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidRegistrationNumberException;
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 
-@RequiredArgsConstructor
+
 public class ValidatingItemProcessor implements ItemProcessor<CompanyDTO, CompanyDTO> {
 
-    private ValidationService validationService;
+    private final ValidationService validationService;
+
+    public ValidatingItemProcessor(ValidationService validationService) {
+        this.validationService = validationService;
+    }
 
     @Override
-    public CompanyDTO process(CompanyDTO companyDTO) throws Exception {
+    public CompanyDTO process(CompanyDTO companyDTO) {
 
         if (!this.validationService.isEmailValid(companyDTO.email())) {
             throw new InvalidEmailException("Invalid email for " + companyDTO);
