@@ -2,8 +2,6 @@ package com.client.rcrm.integration.raynet.batch.reader;
 
 import com.client.rcrm.integration.raynet.batch.dto.CompanyDTO;
 import com.client.rcrm.integration.raynet.batch.fieldmapper.CompanyRecordFieldSetMapper;
-import jakarta.annotation.PostConstruct;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.LineMapper;
@@ -11,13 +9,11 @@ import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.stereotype.Component;
 
-@Component
-public class CompanyRecordItemReader {
+
+
+public class CompanyRecordItemReader implements ItemReader<FlatFileItemReader<CompanyDTO>> {
 
     private static final String DEFAULT_DELIMITER = ";";
     private static final String REGISTRATION_NUMBER = "regNumber";
@@ -25,30 +21,30 @@ public class CompanyRecordItemReader {
     private static final String EMAIL = "email";
     private static final String PHONE = "phone";
 
-//    private FlatFileItemReader<CompanyDTO> delegate;
-//
-//
-//    @Value("#{jobParameters['input.file']}")
-//    private String inputFile;
-//
-//    @PostConstruct
-//    public void init() {
-//        this.delegate = new FlatFileItemReaderBuilder<CompanyDTO>()
-//                .name("companyItemReader")
-//                .resource(new FileSystemResource(inputFile))
-//                .saveState(false)
-//                .linesToSkip(1)
-//                .lineMapper(lineMapper())
-//                .targetType(CompanyDTO.class)
-//                .build();
-//    }
+    private final FlatFileItemReader<CompanyDTO> delegate;
+    private final Object lock;
 
-//    @Override
-//    public FlatFileItemReader<CompanyDTO> read() {
-//        return
-//    }
+    public CompanyRecordItemReader(@Value("#{jobParameters['input.file']}") String filePath) {
+        this.delegate = new FlatFileItemReaderBuilder<CompanyDTO>()
+                .name("companyItemReader")
+                .resource(new FileSystemResource(filePath))
+                .saveState(false)
+                .linesToSkip(1)
+                .lineMapper(lineMapper())
+                .targetType(CompanyDTO.class)
+                .build();
+        this.lock = new Object();
+    }
 
-    public LineMapper<CompanyDTO> lineMapper() {
+    @Override
+    public FlatFileItemReader<CompanyDTO> read() {
+        synchronized (lock) {
+            return this.delegate;
+
+        }
+    }
+
+    private LineMapper<CompanyDTO> lineMapper() {
         DefaultLineMapper<CompanyDTO> lineMapper = new DefaultLineMapper<>();
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(DEFAULT_DELIMITER);

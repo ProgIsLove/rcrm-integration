@@ -5,9 +5,10 @@ import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidPhoneNumberException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidRegistrationNumberException;
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.item.ItemProcessor;
 
-
+@JobScope
 public class ValidatingItemProcessor implements ItemProcessor<CompanyDTO, CompanyDTO> {
 
     private final ValidationService validationService;
