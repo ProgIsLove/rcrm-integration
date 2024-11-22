@@ -1,6 +1,6 @@
 package com.client.rcrm.integration.raynet.batch.reader;
 
-import com.client.rcrm.integration.raynet.batch.dto.CompanyDTO;
+import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
 import com.client.rcrm.integration.raynet.batch.fieldmapper.CompanyRecordFieldSetMapper;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;

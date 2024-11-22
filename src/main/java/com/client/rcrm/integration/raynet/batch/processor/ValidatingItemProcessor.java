@@ -1,6 +1,6 @@
 package com.client.rcrm.integration.raynet.batch.processor;
 
-import com.client.rcrm.integration.raynet.batch.dto.CompanyDTO;
+import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidPhoneNumberException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidRegistrationNumberException;
