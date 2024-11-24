@@ -40,7 +40,6 @@ public class CompanyRecordItemReader implements ItemReader<FlatFileItemReader<Co
     public FlatFileItemReader<CompanyDTO> read() {
         synchronized (lock) {
             return this.delegate;
-
         }
     }
 

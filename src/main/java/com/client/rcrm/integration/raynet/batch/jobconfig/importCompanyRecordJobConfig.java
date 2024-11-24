@@ -1,6 +1,8 @@
 package com.client.rcrm.integration.raynet.batch.jobconfig;
 
+import com.client.rcrm.integration.raynet.batch.company.dao.CompanyDAO;
 import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
+import com.client.rcrm.integration.raynet.batch.company.entity.Company;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidPhoneNumberException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidRegistrationNumberException;
@@ -8,6 +10,7 @@ import com.client.rcrm.integration.raynet.batch.listener.ImportJobListener;
 import com.client.rcrm.integration.raynet.batch.processor.ValidatingItemProcessor;
 import com.client.rcrm.integration.raynet.batch.reader.CompanyRecordItemReader;
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
+import com.client.rcrm.integration.raynet.batch.writer.CompanyRecordItemWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -15,6 +18,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,13 +37,15 @@ public class importCompanyRecordJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final ValidationService validationService;
+    private final CompanyDAO companyDAO;
 
     public importCompanyRecordJobConfig(JobRepository jobRepository,
                                         PlatformTransactionManager platformTransactionManager,
-                                        ValidationService validationService) {
+                                        ValidationService validationService, CompanyDAO companyDAO) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.validationService = validationService;
+        this.companyDAO = companyDAO;
     }
 
     @Bean
@@ -62,14 +68,19 @@ public class importCompanyRecordJobConfig {
         return companyRecordItemReader.read();
     }
 
+    @Bean(name = "writer")
+    public ItemWriter<Company> writer() {
+        return new CompanyRecordItemWriter(companyDAO);
+    }
+
 
     @Bean(name = "importCompanyStep")
     public Step importCompanyStep(@Qualifier("reader") FlatFileItemReader<CompanyDTO> reader) {
         return new StepBuilder("importCompanyStep", jobRepository)
-                .<CompanyDTO, CompanyDTO>chunk(10000, platformTransactionManager)
+                .<CompanyDTO, Company>chunk(10000, platformTransactionManager)
                 .reader(Objects.requireNonNull(reader))
                 .processor(processor())
-                .writer(items -> log.info("writing items: {}", items))
+                .writer(writer())
                 .taskExecutor(taskExecutor())
                 .faultTolerant()
                 .skip(InvalidEmailException.class)
@@ -81,6 +92,6 @@ public class importCompanyRecordJobConfig {
 
     @Bean
     public TaskExecutor taskExecutor() {
-        return new VirtualThreadTaskExecutor("Custom-Thread-");
+        return new VirtualThreadTaskExecutor();
     }
 }

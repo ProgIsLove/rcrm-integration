@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface CompanyDAO {
 
-    boolean saveAll(List<Company> companies);
+    void saveAll(List<Company> companies);
+
+//    <S extends T> void saveAll(ItemWriterrable<S> entities);
 }
