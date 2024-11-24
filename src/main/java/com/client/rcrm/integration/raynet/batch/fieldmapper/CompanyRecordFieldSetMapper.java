@@ -1,6 +1,6 @@
 package com.client.rcrm.integration.raynet.batch.fieldmapper;
 
-import com.client.rcrm.integration.raynet.batch.dto.CompanyDTO;
+import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 
