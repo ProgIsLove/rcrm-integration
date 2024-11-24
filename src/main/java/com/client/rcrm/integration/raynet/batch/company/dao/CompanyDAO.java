@@ -1,13 +1,12 @@
 package com.client.rcrm.integration.raynet.batch.company.dao;
 
-import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
-import com.client.rcrm.integration.raynet.batch.company.entity.Company;
-
 import java.util.List;
 
-public interface CompanyDAO {
+public interface CompanyDAO<T> {
 
-    void saveAll(List<Company> companies);
+    void saveAll(List<T> companies);
 
-//    <S extends T> void saveAll(ItemWriterrable<S> entities);
+    List<T> getAllCompanies(int page, int size);
+
+    int count();
 }
