@@ -9,12 +9,10 @@ import java.sql.SQLException;
 public class CompanyMapper implements RowMapper<Company> {
     @Override
     public Company mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Company.builder()
-                .id(rs.getLong(1))
-                .registrationNumber(rs.getString(2))
-                .title(rs.getString(3))
-                .email(rs.getString(4))
-                .phoneNumber(rs.getString(5))
-                .build();
+        return new Company(rs.getLong(1),
+                rs.getString(2),
+                rs.getString(3),
+                rs.getString(4),
+                rs.getString(5));
     }
 }

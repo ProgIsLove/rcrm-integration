@@ -1,16 +1,21 @@
 package com.client.rcrm.integration.raynet.connector.rcrmconnectr;
 
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.CompanyDTO;
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.CompanyResponseDTO;
+import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientRequestDTO;
+import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientResponseDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties
@@ -46,21 +51,62 @@ public class RaynetConnector {
     }
 
 
-    public List<CompanyDTO> getCompanies() {
+    public ClientResponseDTO fetchCompanyByRegNumber(String regNumber) {
+        String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("regNumber", regNumber)
+                .build()
+                .toString();
+
+        try {
+            ResponseEntity<ClientResponseDTO> response = restTemplate.exchange(
+                    url, HttpMethod.GET, null, ClientResponseDTO.class);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                return new ClientResponseDTO(false, 0, List.of());
+            }
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException("Error while updating company: " + e.getMessage(), e);
+        }
+    }
+
+    public Map<String, Object> createCompany(ClientRequestDTO createRequest) {
         String url = baseUrl + "/";
 
-            ResponseEntity<CompanyResponseDTO> response = restTemplate.exchange(
-                    url, HttpMethod.GET, null, CompanyResponseDTO.class);
+        try {
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    url, HttpMethod.PUT, new HttpEntity<>(createRequest),
+                    new ParameterizedTypeReference<>() {
+                    });
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            CompanyResponseDTO responseDTO = response.getBody();
-            if (responseDTO != null && responseDTO.data() != null) {
-                return responseDTO.data();
+            if (response.getStatusCode() == HttpStatus.CREATED && response.getBody() != null) {
+                return response.getBody();
             } else {
-                return List.of();
+                throw new RuntimeException("Unexpected response from API. HTTP Status: " + response.getStatusCode());
             }
-        } else {
-            throw new RuntimeException("Failed to fetch companies, status: " + response.getStatusCode());
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException("Error while creating company: " + e.getMessage(), e);
+        }
+    }
+
+    public Map<String, String> updateCompany(Long companyId, ClientRequestDTO updateRequest) {
+        String url = baseUrl + "/" + companyId;
+
+        try {
+            ResponseEntity<Map<String, String>> response = restTemplate.exchange(
+                    url, HttpMethod.POST, new HttpEntity<>(updateRequest),
+                    new ParameterizedTypeReference<>() {
+                    });
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Unexpected response from API. HTTP Status: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException("Error while updating company: " + e.getMessage(), e);
         }
     }
 }
+

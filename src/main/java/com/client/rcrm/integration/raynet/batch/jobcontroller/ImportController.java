@@ -2,9 +2,7 @@ package com.client.rcrm.integration.raynet.batch.jobcontroller;
 
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
 import com.client.rcrm.integration.raynet.connector.rcrmconnectr.RaynetService;
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.CompanyDTO;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.batch.core.*;
@@ -12,8 +10,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,10 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/host/uploadData")
@@ -67,9 +59,9 @@ public class ImportController {
 
 
             run = jobLauncher.run(this.job, jobParameters);
-//            if("COMPLETED".equalsIgnoreCase(run.getStatus().toString())){
-//                Files.deleteIfExists(Paths.get(tempFile.toUri()));
-//            }
+            if("COMPLETED".equalsIgnoreCase(run.getStatus().toString())){
+                raynetService.syncCompaniesWithRaynetPaginated(100);
+            }
 
         } catch (IOException e) {
             throw new BadRequestException("Error occurred while processing the file.", e);
@@ -84,8 +76,20 @@ public class ImportController {
         return ResponseEntity.ok().body(run.getStatus().toString());
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CompanyDTO>> companies() {
-        return ResponseEntity.ok(raynetService.getCompanies());
-    }
+//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<ClientResponseDTO> companies(@RequestParam("regNumber") String regNumber) {
+//        return ResponseEntity.ok(raynetService.(regNumber));
+//    }
+//
+//    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Map<String, Object>> createCompany(@RequestBody ClientRequestDTO clientRequestDTO) {
+//        Map<String, Object> createCompany = raynetService.createCompany(clientRequestDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(createCompany);
+//    }
+//
+//    @PostMapping(value = "/{companyId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Map<String, String>> updateCompany(@RequestBody ClientRequestDTO clientRequestDTO, @PathVariable("companyId") Long companyId) {
+//        Map<String, String> updateCompany = raynetService.updateCompany(companyId, clientRequestDTO);
+//        return ResponseEntity.status(HttpStatus.OK).body(updateCompany);
+//    }
 }
