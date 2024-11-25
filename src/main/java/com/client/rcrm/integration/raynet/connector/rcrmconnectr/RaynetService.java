@@ -7,6 +7,8 @@ import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientReque
 import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientResponseDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -72,31 +74,33 @@ public class RaynetService {
 
     @Async
     public CompletableFuture<Void> processCompany(Company company) {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                ClientResponseDTO clientResponseDTO = checkCompanyExistByRegNumber(company.getRegistrationNumber());
-                if (clientResponseDTO.totalCount() != 0) {
-                    clientResponseDTO.data().forEach(client -> updateCompany(client.id(), mapToClientRequestDTO(company)));
-                } else {
-                    createCompany(mapToClientRequestDTO(company));
-                }
-            } catch (Exception e) {
-                System.err.println("Error processing company: " + company.getRegistrationNumber() + " - " + e.getMessage());
-            }
-        });
+        return checkCompanyExistByRegNumber(company.getRegistrationNumber())
+                .thenAccept(clientResponseDTO -> {
+                    if (clientResponseDTO.totalCount() != 0) {
+                        clientResponseDTO.data().forEach(client -> updateCompany(client.id(), mapToClientRequestDTO(company)));
+                    } else {
+                        createCompany(mapToClientRequestDTO(company));
+                    }
+                })
+                .exceptionally(ex -> {
+                    // Handle error
+                    System.err.println("Error: " + ex.getMessage());
+                    return null;
+                });
     }
 
 
-    public Map<String, Object> createCompany(ClientRequestDTO clientRequestDTO) {
-        return raynetConnector.createCompany(clientRequestDTO);
+    public CompletableFuture<Map<String, Object>> createCompany(ClientRequestDTO clientRequestDTO) {
+        return CompletableFuture.supplyAsync(() -> raynetConnector.createCompany(clientRequestDTO));
     }
 
-    public Map<String, String> updateCompany(Long id, ClientRequestDTO clientRequestDTO) {
-        return raynetConnector.updateCompany(id, clientRequestDTO);
+    public CompletableFuture<Map<String, String>> updateCompany(Long id, ClientRequestDTO clientRequestDTO) {
+        return CompletableFuture.supplyAsync(() -> raynetConnector.updateCompany(id, clientRequestDTO));
+
     }
 
-    public ClientResponseDTO checkCompanyExistByRegNumber(String regNumber) {
-        return raynetConnector.fetchCompanyByRegNumber(regNumber);
+    public CompletableFuture<ClientResponseDTO> checkCompanyExistByRegNumber(String regNumber) {
+        return CompletableFuture.supplyAsync(() -> raynetConnector.fetchCompanyByRegNumber(regNumber));
     }
 
     private ClientRequestDTO mapToClientRequestDTO(Company company) {
