@@ -1,4 +1,4 @@
-package com.client.rcrm.integration.raynet.connector.rcrmconnectr;
+package com.client.rcrm.integration.raynet.connector.rcrmconnector;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;

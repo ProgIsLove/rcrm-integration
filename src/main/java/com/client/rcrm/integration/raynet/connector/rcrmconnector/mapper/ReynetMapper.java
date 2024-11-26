@@ -1,4 +1,4 @@
-package com.client.rcrm.integration.raynet.connector.rcrmconnectr.mapper;
+package com.client.rcrm.integration.raynet.connector.rcrmconnector.mapper;
 
 
 

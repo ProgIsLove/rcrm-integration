@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImportJobListener implements JobExecutionListener {
 
-    private final static String PREFIX_TABLE_NANE = "company_";
-
     @Override
     public void beforeJob(JobExecution jobExecution) {
 
@@ -35,10 +33,5 @@ public class ImportJobListener implements JobExecutionListener {
             log.info("the job has written {} lines", writeCount);
             log.info("the job has skip {} lines", skipCount);
         });
-    }
-
-    private String generateTableName(JobExecution jobExecution) {
-        Long jobId = jobExecution.getJobId();
-        return String.format("company_%d", jobId);
     }
 }

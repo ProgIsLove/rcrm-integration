@@ -1,6 +1,6 @@
-package com.client.rcrm.integration.raynet.connector.rcrmconnectr;
+package com.client.rcrm.integration.raynet.connector.rcrmconnector;
 
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.RestTemplateError;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.RestTemplateError;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -33,9 +33,9 @@ public class CustomErrorHandler implements ResponseErrorHandler {
 
             RestTemplateError restTemplateError = parseErrorResponse(httpBodyResponse);
 
-            throw new RestServiceException(
+            throw new RaynetException(
                     statusCode,
-                    restTemplateError.translatedMessage()
+                    restTemplateError.message()
             );
         }
     }

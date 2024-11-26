@@ -1,6 +1,6 @@
 package com.client.rcrm.integration.raynet.connector.config;
 
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.CustomErrorHandler;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.CustomErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

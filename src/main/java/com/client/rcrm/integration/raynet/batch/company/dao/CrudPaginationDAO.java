@@ -7,6 +7,4 @@ public interface CrudPaginationDAO<T> {
     void saveAll(List<T> companies);
 
     List<T> getAllCompanies(int page, int size);
-
-    int count();
 }

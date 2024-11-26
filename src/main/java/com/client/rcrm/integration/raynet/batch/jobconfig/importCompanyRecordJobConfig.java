@@ -37,11 +37,11 @@ public class importCompanyRecordJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final ValidationService validationService;
-    private final CrudPaginationDAO companyDAO;
+    private final CrudPaginationDAO<?> companyDAO;
 
     public importCompanyRecordJobConfig(JobRepository jobRepository,
                                         PlatformTransactionManager platformTransactionManager,
-                                        ValidationService validationService, CrudPaginationDAO companyDAO) {
+                                        ValidationService validationService, CrudPaginationDAO<?> companyDAO) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.validationService = validationService;

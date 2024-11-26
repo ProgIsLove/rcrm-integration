@@ -28,7 +28,7 @@ public class CompanyRecordItemReader implements ItemReader<FlatFileItemReader<Co
         this.delegate = new FlatFileItemReaderBuilder<CompanyDTO>()
                 .name("companyItemReader")
                 .resource(new FileSystemResource(filePath))
-                .saveState(false)
+                .saveState(true)
                 .linesToSkip(1)
                 .lineMapper(lineMapper())
                 .targetType(CompanyDTO.class)
