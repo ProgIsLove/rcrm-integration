@@ -1,7 +1,10 @@
 package com.client.rcrm.integration.raynet.batch.validation;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -29,5 +32,15 @@ public class ValidationService {
 
     public boolean isPhoneNumberValid(String phone) {
         return phone != null && PHONE_PATTERN.matcher(phone).matches();
+    }
+
+    public void validateFile(MultipartFile file, String fileExtension) throws BadRequestException {
+        if (file == null || file.isEmpty()) {
+            throw new BadRequestException("File is empty. Please upload a valid CSV file.");
+        }
+
+        if (!Objects.requireNonNull(file.getOriginalFilename()).endsWith(fileExtension)) {
+            throw new BadRequestException("Invalid file format. Please upload a .csv file.");
+        }
     }
 }

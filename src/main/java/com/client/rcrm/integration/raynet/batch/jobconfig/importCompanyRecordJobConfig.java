@@ -1,6 +1,6 @@
 package com.client.rcrm.integration.raynet.batch.jobconfig;
 
-import com.client.rcrm.integration.raynet.batch.company.dao.CompanyDAO;
+import com.client.rcrm.integration.raynet.batch.company.dao.CrudPaginationDAO;
 import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
 import com.client.rcrm.integration.raynet.batch.company.entity.Company;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
@@ -37,11 +37,11 @@ public class importCompanyRecordJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final ValidationService validationService;
-    private final CompanyDAO companyDAO;
+    private final CrudPaginationDAO companyDAO;
 
     public importCompanyRecordJobConfig(JobRepository jobRepository,
                                         PlatformTransactionManager platformTransactionManager,
-                                        ValidationService validationService, CompanyDAO companyDAO) {
+                                        ValidationService validationService, CrudPaginationDAO companyDAO) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.validationService = validationService;
