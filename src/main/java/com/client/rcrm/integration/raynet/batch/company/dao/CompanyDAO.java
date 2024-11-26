@@ -43,11 +43,4 @@ public class CompanyDAO implements CrudPaginationDAO<Company> {
         String sql = "SELECT * FROM COMPANY_INFORMATION LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql, new Object[]{pageSize, offset}, new CompanyMapper());
     }
-
-    @Override
-    public int count() {
-        String countSql = "SELECT COUNT(*) FROM COMPANY_INFORMATION";
-        Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
-        return (count != null) ? count : 0;
-    }
 }

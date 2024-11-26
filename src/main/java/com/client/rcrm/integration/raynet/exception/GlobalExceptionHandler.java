@@ -1,7 +1,7 @@
 package com.client.rcrm.integration.raynet.exception;
 
 
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.RestServiceException;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.RaynetException;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,9 +51,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(RestServiceException.class)
-    public ResponseEntity<ExceptionResponse> handleRuntimeException(RestServiceException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RaynetException.class)
+    public ResponseEntity<ExceptionResponse> handleRestServiceException(RaynetException ex) {
+        return ResponseEntity.status(ex.getStatusCode())
                 .body(
                         ExceptionResponse.builder()
                                 .errors(List.of(ExceptionResponse.ExceptionBody.builder()

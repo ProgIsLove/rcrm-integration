@@ -20,6 +20,6 @@ public class CompanyRecordItemWriter implements ItemWriter<Company> {
 
         List<? extends Company> companyList = companies.getItems();
 
-        companyDAO.saveAll((List<Company>) companyList);
+        companyDAO.saveAll(companyList);
     }
 }

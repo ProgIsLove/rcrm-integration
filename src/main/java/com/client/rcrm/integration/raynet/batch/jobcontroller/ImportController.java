@@ -1,7 +1,7 @@
 package com.client.rcrm.integration.raynet.batch.jobcontroller;
 
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.RaynetService;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.RaynetService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -60,7 +60,7 @@ public class ImportController {
 
             run = jobLauncher.run(this.job, jobParameters);
             if("COMPLETED".equalsIgnoreCase(run.getStatus().toString())){
-                raynetService.syncCompaniesWithRaynetPaginated(100);
+                raynetService.syncCompaniesWithRaynetPaginated(10000);
             }
 
         } catch (IOException e) {
@@ -75,21 +75,4 @@ public class ImportController {
 
         return ResponseEntity.ok().body(run.getStatus().toString());
     }
-
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<ClientResponseDTO> companies(@RequestParam("regNumber") String regNumber) {
-//        return ResponseEntity.ok(raynetService.(regNumber));
-//    }
-//
-//    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Map<String, Object>> createCompany(@RequestBody ClientRequestDTO clientRequestDTO) {
-//        Map<String, Object> createCompany = raynetService.createCompany(clientRequestDTO);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createCompany);
-//    }
-//
-//    @PostMapping(value = "/{companyId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Map<String, String>> updateCompany(@RequestBody ClientRequestDTO clientRequestDTO, @PathVariable("companyId") Long companyId) {
-//        Map<String, String> updateCompany = raynetService.updateCompany(companyId, clientRequestDTO);
-//        return ResponseEntity.status(HttpStatus.OK).body(updateCompany);
-//    }
 }

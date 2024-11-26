@@ -1,7 +1,7 @@
-package com.client.rcrm.integration.raynet.connector.rcrmconnectr;
+package com.client.rcrm.integration.raynet.connector.rcrmconnector;
 
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientRequestDTO;
-import com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto.ClientResponseDTO;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientRequestDTO;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientResponseDTO;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +67,9 @@ public class RaynetConnector {
                 return new ClientResponseDTO(false, 0, List.of());
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new RuntimeException("Error while updating company: " + e.getMessage(), e);
+            throw new RuntimeException("Error while fetching company: " + e.getMessage(), e);
+        } catch (RaynetException e) {
+            throw new RaynetException(e.getStatusCode(), e.getTranslatedMessage());
         }
     }
 

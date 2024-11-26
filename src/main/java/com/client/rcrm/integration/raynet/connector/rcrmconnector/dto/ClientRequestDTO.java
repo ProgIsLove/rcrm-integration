@@ -1,4 +1,4 @@
-package com.client.rcrm.integration.raynet.connector.rcrmconnectr.dto;
+package com.client.rcrm.integration.raynet.connector.rcrmconnector.dto;
 
 public record ClientRequestDTO(
         String name,
