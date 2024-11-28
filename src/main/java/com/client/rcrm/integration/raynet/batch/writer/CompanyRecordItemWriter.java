@@ -1,25 +1,21 @@
 package com.client.rcrm.integration.raynet.batch.writer;
 
-import com.client.rcrm.integration.raynet.batch.company.dao.CrudPaginationDAO;
 import com.client.rcrm.integration.raynet.batch.company.entity.Company;
+import com.client.rcrm.integration.raynet.batch.company.repository.CompanyRepository;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
-import java.util.List;
-
 public class CompanyRecordItemWriter implements ItemWriter<Company> {
 
-    private final CrudPaginationDAO companyDAO;
+    private final CompanyRepository companyRepository;
 
-    public CompanyRecordItemWriter(CrudPaginationDAO companyDAO) {
-        this.companyDAO = companyDAO;
+    public CompanyRecordItemWriter(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     @Override
-    public void write(Chunk<? extends Company> companies) throws Exception {
+    public void write(Chunk<? extends Company> companies) {
 
-        List<? extends Company> companyList = companies.getItems();
-
-        companyDAO.saveAll(companyList);
+        companyRepository.saveAll(companies);
     }
 }

@@ -1,12 +1,13 @@
 package com.client.rcrm.integration.raynet.connector.rcrmconnector;
 
-import com.client.rcrm.integration.raynet.batch.company.dao.CompanyDAO;
 import com.client.rcrm.integration.raynet.batch.company.entity.Company;
+import com.client.rcrm.integration.raynet.batch.company.repository.CompanyRepository;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientRequestDTO;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientResponseDTO;
-import com.client.rcrm.integration.raynet.notification.NotificationDetails;
 import com.client.rcrm.integration.raynet.notification.NotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -23,25 +24,27 @@ import java.util.concurrent.TimeUnit;
 public class RaynetService {
 
     private final RaynetConnector raynetConnector;
-    private final CompanyDAO companyDAO;
     private final RedisTemplate<String, Object> redisTemplate;
     private final NotificationService notificationService;
+    private final CompanyRepository companyRepository;
 
-    public RaynetService(RaynetConnector raynetConnector, CompanyDAO companyDAO,
-                         RedisTemplate<String, Object> redisTemplate, NotificationService notificationService) {
+    public RaynetService(RaynetConnector raynetConnector,
+                         RedisTemplate<String, Object> redisTemplate,
+                         NotificationService notificationService,
+                         CompanyRepository companyRepository) {
         this.raynetConnector = raynetConnector;
-        this.companyDAO = companyDAO;
         this.redisTemplate = redisTemplate;
         this.notificationService = notificationService;
+        this.companyRepository = companyRepository;
     }
 
     public void syncCompaniesWithRaynetPaginated(int pageSize) {
         int page = 1;
-        List<Company> companies;
+        Page<Company> companies;
         boolean allSuccess = true;
 
         do {
-            companies = companyDAO.getAllCompanies(page, pageSize);
+            companies = companyRepository.findAll(PageRequest.of(page, pageSize));
 
             List<CompletableFuture<Void>> tasks = companies.stream()
                     .map(this::processCompany)
@@ -56,10 +59,12 @@ public class RaynetService {
 
             page++;
 
-            if (companies.isEmpty() && allSuccess) {
-                notificationService.sendNotification("EmailWithAttachmentNotification", "json_success.json");
-            }
         } while (!companies.isEmpty());
+
+        if (allSuccess) {
+            companyRepository.deleteAll();
+            notificationService.sendNotification("EmailWithAttachmentNotification", "json_success.json");
+        }
     }
 
     @Async
