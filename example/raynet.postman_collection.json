@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "8cfc47f0-e118-4430-a1a5-df5df84824c2",
+		"name": "raynet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36604437"
+	},
+	"item": [
+		{
+			"name": "https://app.raynet.cz/api/v2/company/",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "crm-a7e8b9d6b8ef47c6a8b9d6b8ef57c667",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "tomas.pardygal@seznam.cz",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-instance-Name",
+						"value": "tomcompany",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNET s.r.o.\",\r\n  \"owner\": 12,\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"notice\": \"poznamka\",\r\n  \"category\": 12,\r\n  \"contactSource\": 12,\r\n  \"employeesNumber\": 12,\r\n  \"legalForm\": 12,\r\n  \"paymentTerm\": 12,\r\n  \"turnover\": 12,\r\n  \"economyActivity\": 12,\r\n  \"companyClassification1\": 12,\r\n  \"companyClassification2\": 12,\r\n  \"companyClassification3\": 12,\r\n  \"regNumber\": \"89789242\",\r\n  \"taxNumber\": \"CZ89789242\",\r\n  \"taxPayer\": \"YES\",\r\n  \"bankAccount\": \"123123123\",\r\n  \"customFields\": {\r\n    \"Lonsky_zis_7aac1\": 666\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://app.raynet.cz/api/v2/company/",
+					"protocol": "https",
+					"host": [
+						"app",
+						"raynet",
+						"cz"
+					],
+					"path": [
+						"api",
+						"v2",
+						"company",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://app.raynet.cz/api/v2/company/ Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "crm-a7e8b9d6b8ef47c6a8b9d6b8ef57c667",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "tomas.pardygal@seznam.cz",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-instance-Name",
+						"value": "tomcompany",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNET s.r.o.\",\r\n  \"owner\": 12,\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"notice\": \"poznamka\",\r\n  \"category\": 12,\r\n  \"contactSource\": 12,\r\n  \"employeesNumber\": 12,\r\n  \"legalForm\": 12,\r\n  \"paymentTerm\": 12,\r\n  \"turnover\": 12,\r\n  \"economyActivity\": 12,\r\n  \"companyClassification1\": 12,\r\n  \"companyClassification2\": 12,\r\n  \"companyClassification3\": 12,\r\n  \"regNumber\": \"89789242\",\r\n  \"taxNumber\": \"CZ89789242\",\r\n  \"taxPayer\": \"YES\",\r\n  \"bankAccount\": \"123123123\",\r\n  \"customFields\": {\r\n    \"Lonsky_zis_7aac1\": 666\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://app.raynet.cz/api/v2/company/?regNumber=26843820",
+					"protocol": "https",
+					"host": [
+						"app",
+						"raynet",
+						"cz"
+					],
+					"path": [
+						"api",
+						"v2",
+						"company",
+						""
+					],
+					"query": [
+						{
+							"key": "regNumber",
+							"value": "26843820"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://app.raynet.cz/api/v2/company/",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "tomas.pardygal@seznam.cz",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "crm-a7e8b9d6b8ef47c6a8b9d6b8ef57c667",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-instance-Name",
+						"value": "tomcompany",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNET s.r.o.\",\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"regNumber\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://app.raynet.cz/api/v2/company/",
+					"protocol": "https",
+					"host": [
+						"app",
+						"raynet",
+						"cz"
+					],
+					"path": [
+						"api",
+						"v2",
+						"company",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://app.raynet.cz/api/v2/company/17",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "tomas.pardygal@seznam.cz",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "crm-a7e8b9d6b8ef47c6a8b9d6b8ef57c667",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-instance-Name",
+						"value": "tomcompany",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNETX s.r.o.\",\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"regNumber\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://app.raynet.cz/api/v2/company/31",
+					"protocol": "https",
+					"host": [
+						"app",
+						"raynet",
+						"cz"
+					],
+					"path": [
+						"api",
+						"v2",
+						"company",
+						"31"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/host/uploadData",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1efab7af-7e56-4320-a631-17ab203dc498"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/host/uploadData",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"host",
+						"uploadData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/host/uploadData Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1efab7af-7e56-4320-a631-17ab203dc498"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/host/uploadData",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"host",
+						"uploadData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/host/uploadData Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1efab7af-7e56-4320-a631-17ab203dc498"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8081/host/uploadData?regNumber=27767656",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"host",
+						"uploadData"
+					],
+					"query": [
+						{
+							"key": "regNumber",
+							"value": "27767656"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/host/uploadData Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNET s.r.o.\",\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"regNumber\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/host/uploadData",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"host",
+						"uploadData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/host/uploadData Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"RAYNET s.r.o.\",\r\n  \"rating\": \"A\",\r\n  \"state\": \"A_POTENTIAL\",\r\n  \"role\": \"B_PARTNER\",\r\n  \"regNumber\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/host/uploadData/31",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"host",
+						"uploadData",
+						"31"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/notifications/send?channel=EmailWithAttachmentNotification",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/notifications/send?channel=EmailWithAttachmentNotification",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"notifications",
+						"send"
+					],
+					"query": [
+						{
+							"key": "channel",
+							"value": "EmailWithAttachmentNotification"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
