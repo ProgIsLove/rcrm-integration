@@ -1,6 +1,7 @@
 package com.client.rcrm.integration.raynet.exception;
 
 
+import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.RaynetException;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import org.apache.coyote.BadRequestException;
@@ -59,6 +60,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                 .errors(List.of(ExceptionResponse.ExceptionBody.builder()
                                         .title(ex.getStatusCode().toString())
                                         .details(ex.getTranslatedMessage())
+                                        .build()))
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(InvalidEmailException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidEmailException(InvalidEmailException ex) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .errors(List.of(ExceptionResponse.ExceptionBody.builder()
+                                        .title("Bad Request")
+                                        .details(ex.getMessage())
                                         .build()))
                                 .build()
                 );
