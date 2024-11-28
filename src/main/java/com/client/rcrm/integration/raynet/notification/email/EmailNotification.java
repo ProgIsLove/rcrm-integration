@@ -1,5 +1,7 @@
 package com.client.rcrm.integration.raynet.notification.email;
 
+import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
+import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
 import com.client.rcrm.integration.raynet.notification.NotificationDetails;
 import com.client.rcrm.integration.raynet.notification.NotificationStrategy;
 import com.client.rcrm.integration.raynet.notification.exception.EmailNotSendException;
@@ -23,6 +25,7 @@ public class EmailNotification implements NotificationStrategy {
     private final JavaMailSender javaMailSender;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final TemplateEngine templateEngine;
+    private final ValidationService validationService;
 
     @Value("${spring.mail.username}")
     private String sender;
@@ -30,15 +33,19 @@ public class EmailNotification implements NotificationStrategy {
     @Value("${raynet.username}")
     private String recipient;
 
-    public EmailNotification(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+    public EmailNotification(JavaMailSender javaMailSender, TemplateEngine templateEngine, ValidationService validationService) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+        this.validationService = validationService;
     }
 
     @Override
     public void sendNotification(String emailDetails) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper;
+
+        this.isEmailValid(sender);
+        this.isEmailValid(recipient);
 
         try {
             mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -66,6 +73,12 @@ public class EmailNotification implements NotificationStrategy {
             throw new EmailNotSendException("Email wasn't sent due to messaging error: " + e.getMessage());
         } catch (IOException e) {
             throw new RuntimeException("Error reading or parsing the email details: " + e.getMessage(), e);
+        }
+    }
+
+    private void isEmailValid(String mail) {
+        if (!this.validationService.isEmailValid(mail)) {
+            throw new InvalidEmailException("Invalid email for " + mail);
         }
     }
 }

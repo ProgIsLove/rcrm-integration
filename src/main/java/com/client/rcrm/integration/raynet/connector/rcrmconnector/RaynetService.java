@@ -103,15 +103,15 @@ public class RaynetService {
     }
 
 
-    public void createCompany(ClientRequestDTO clientRequestDTO) {
+    private void createCompany(ClientRequestDTO clientRequestDTO) {
         CompletableFuture.supplyAsync(() -> raynetConnector.createCompany(clientRequestDTO));
     }
 
-    public void updateCompany(Long id, ClientRequestDTO clientRequestDTO) {
+    private void updateCompany(Long id, ClientRequestDTO clientRequestDTO) {
         CompletableFuture.supplyAsync(() -> raynetConnector.updateCompany(id, clientRequestDTO));
     }
 
-    public CompletableFuture<ClientResponseDTO> checkCompanyExistByRegNumber(String regNumber) {
+    private CompletableFuture<ClientResponseDTO> checkCompanyExistByRegNumber(String regNumber) {
         return CompletableFuture.supplyAsync(() -> {
 
             ClientResponseDTO cachedResponse = (ClientResponseDTO) redisTemplate.opsForValue().get(regNumber);

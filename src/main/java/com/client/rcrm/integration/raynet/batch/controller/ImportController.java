@@ -39,7 +39,7 @@ public class ImportController {
     @RateLimiter(name = "apiUploadDataRateLimit")
     public ResponseEntity<String> importCsvToDBJob(@RequestParam("file") MultipartFile file) throws BadRequestException {
 
-        validationService.validateFile(file, ".csv");
+        validationService.isFileValid(file, ".csv");
 
         JobExecution run;
 

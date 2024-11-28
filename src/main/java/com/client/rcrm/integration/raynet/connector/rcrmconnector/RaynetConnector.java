@@ -3,6 +3,7 @@ package com.client.rcrm.integration.raynet.connector.rcrmconnector;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientRequestDTO;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientResponseDTO;
 import jakarta.annotation.PostConstruct;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,6 +21,7 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties
 @Slf4j
+@Setter
 public class RaynetConnector {
 
     private final RestTemplate restTemplate;
@@ -64,7 +66,7 @@ public class RaynetConnector {
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 return response.getBody();
             } else {
-                return new ClientResponseDTO(false, 0, List.of());
+                throw new RuntimeException("Unexpected response from API. HTTP Status: " + response.getStatusCode());
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException("Error while fetching company: " + e.getMessage(), e);
@@ -89,6 +91,8 @@ public class RaynetConnector {
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException("Error while creating company: " + e.getMessage(), e);
+        } catch (RaynetException e) {
+            throw new RaynetException(e.getStatusCode(), e.getTranslatedMessage());
         }
     }
 
@@ -108,6 +112,8 @@ public class RaynetConnector {
             }
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException("Error while updating company: " + e.getMessage(), e);
+        } catch (RaynetException e) {
+            throw new RaynetException(e.getStatusCode(), e.getTranslatedMessage());
         }
     }
 }

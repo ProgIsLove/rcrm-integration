@@ -34,7 +34,7 @@ public class ValidationService {
         return phone != null && PHONE_PATTERN.matcher(phone).matches();
     }
 
-    public void validateFile(MultipartFile file, String fileExtension) throws BadRequestException {
+    public void isFileValid(MultipartFile file, String fileExtension) throws BadRequestException {
         if (file == null || file.isEmpty()) {
             throw new BadRequestException("File is empty. Please upload a valid CSV file.");
         }
