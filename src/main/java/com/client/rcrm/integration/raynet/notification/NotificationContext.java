@@ -13,11 +13,11 @@ public class NotificationContext {
         this.strategies = strategies;
     }
 
-    public void send(String strategyKey, NotificationDetails details) {
+    public void send(String strategyKey, String emailDetails) {
         NotificationStrategy strategy = strategies.get(strategyKey);
         if (strategy == null) {
             throw new IllegalArgumentException("Notification strategy not found: " + strategyKey);
         }
-        strategy.sendNotification(details);
+        strategy.sendNotification(emailDetails);
     }
 }

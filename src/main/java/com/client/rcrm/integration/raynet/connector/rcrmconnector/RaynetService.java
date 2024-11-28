@@ -4,6 +4,9 @@ import com.client.rcrm.integration.raynet.batch.company.dao.CompanyDAO;
 import com.client.rcrm.integration.raynet.batch.company.entity.Company;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientRequestDTO;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientResponseDTO;
+import com.client.rcrm.integration.raynet.notification.NotificationDetails;
+import com.client.rcrm.integration.raynet.notification.NotificationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,22 +19,26 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class RaynetService {
 
     private final RaynetConnector raynetConnector;
     private final CompanyDAO companyDAO;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final NotificationService notificationService;
 
     public RaynetService(RaynetConnector raynetConnector, CompanyDAO companyDAO,
-                         RedisTemplate<String, Object> redisTemplate) {
+                         RedisTemplate<String, Object> redisTemplate, NotificationService notificationService) {
         this.raynetConnector = raynetConnector;
         this.companyDAO = companyDAO;
         this.redisTemplate = redisTemplate;
+        this.notificationService = notificationService;
     }
 
     public void syncCompaniesWithRaynetPaginated(int pageSize) {
         int page = 1;
         List<Company> companies;
+        boolean allSuccess = true;
 
         do {
             companies = companyDAO.getAllCompanies(page, pageSize);
@@ -40,9 +47,18 @@ public class RaynetService {
                     .map(this::processCompany)
                     .toList();
 
-            CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
+            try {
+                CompletableFuture.allOf(tasks.toArray(new CompletableFuture[0])).join();
+            } catch (CompletionException ex) {
+                log.error("Error occurred during company synchronization: {}", ex.getMessage());
+                allSuccess = false;
+            }
 
             page++;
+
+            if (companies.isEmpty() && allSuccess) {
+                notificationService.sendNotification("EmailWithAttachmentNotification", "json_success.json");
+            }
         } while (!companies.isEmpty());
     }
 
@@ -59,7 +75,7 @@ public class RaynetService {
                 .exceptionally(ex -> {
                     switch (ex) {
                         case HttpServerErrorException exception:
-                                throw new RaynetException(exception.getStatusCode(), exception.getMessage());
+                            throw new RaynetException(exception.getStatusCode(), exception.getMessage());
 
                         case HttpClientErrorException exception:
                             throw new RaynetException(exception.getStatusCode(), exception.getMessage());

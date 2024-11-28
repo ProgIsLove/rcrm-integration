@@ -11,7 +11,7 @@ public class NotificationService {
         this.notificationContext = notificationContext;
     }
 
-    public void sendNotification(String channel, NotificationDetails details) {
-        notificationContext.send(channel, details);
+    public void sendNotification(String channel, String emailDetails) {
+        notificationContext.send(channel, emailDetails);
     }
 }
