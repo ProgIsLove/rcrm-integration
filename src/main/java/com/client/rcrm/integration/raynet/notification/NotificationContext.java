@@ -7,17 +7,17 @@ import java.util.Map;
 @Component
 public class NotificationContext {
 
-    private final Map<String, NotificationStrategy> strategies;
+    private final Map<NotificationType, NotificationStrategy> strategies;
 
-    public NotificationContext(Map<String, NotificationStrategy> strategies) {
+    public NotificationContext(Map<NotificationType, NotificationStrategy> strategies) {
         this.strategies = strategies;
     }
 
-    public void send(String strategyKey, String emailDetails) {
-        NotificationStrategy strategy = strategies.get(strategyKey);
+    public void send(NotificationType notificationType, String message) {
+        NotificationStrategy strategy = strategies.get(notificationType);
         if (strategy == null) {
-            throw new IllegalArgumentException("Notification strategy not found: " + strategyKey);
+            throw new IllegalArgumentException("Notification type not found: " + notificationType);
         }
-        strategy.sendNotification(emailDetails);
+        strategy.sendNotification(message);
     }
 }

@@ -4,7 +4,9 @@ import com.client.rcrm.integration.raynet.batch.company.entity.Company;
 import com.client.rcrm.integration.raynet.batch.company.repository.CompanyRepository;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientRequestDTO;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.dto.ClientResponseDTO;
+import com.client.rcrm.integration.raynet.connector.rcrmconnector.mapper.ReynetMapper;
 import com.client.rcrm.integration.raynet.notification.NotificationService;
+import com.client.rcrm.integration.raynet.notification.NotificationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +29,17 @@ public class RaynetService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final NotificationService notificationService;
     private final CompanyRepository companyRepository;
+    private final ReynetMapper raynetMapper;
 
     public RaynetService(RaynetConnector raynetConnector,
                          RedisTemplate<String, Object> redisTemplate,
                          NotificationService notificationService,
-                         CompanyRepository companyRepository) {
+                         CompanyRepository companyRepository, ReynetMapper raynetMapper) {
         this.raynetConnector = raynetConnector;
         this.redisTemplate = redisTemplate;
         this.notificationService = notificationService;
         this.companyRepository = companyRepository;
+        this.raynetMapper = raynetMapper;
     }
 
     public void syncCompaniesWithRaynetPaginated(int pageSize) {
@@ -61,9 +65,10 @@ public class RaynetService {
 
         } while (!companies.isEmpty());
 
+        companyRepository.deleteAll();
+
         if (allSuccess) {
-            companyRepository.deleteAll();
-            notificationService.sendNotification("EmailWithAttachmentNotification", "json_success.json");
+            notificationService.sendNotification(NotificationType.EMAIL, "json_success.json");
         }
     }
 
@@ -72,9 +77,10 @@ public class RaynetService {
         return checkCompanyExistByRegNumber(company.getRegistrationNumber())
                 .thenAccept(clientResponseDTO -> {
                     if (clientResponseDTO.totalCount() != 0) {
-                        clientResponseDTO.data().forEach(client -> updateCompany(client.id(), mapToClientRequestDTO(company)));
+                        clientResponseDTO.data()
+                                .forEach(client -> updateCompany(client.id(), raynetMapper.mapToClientRequestDTO(company)));
                     } else {
-                        createCompany(mapToClientRequestDTO(company));
+                        createCompany(raynetMapper.mapToClientRequestDTO(company));
                     }
                 })
                 .exceptionally(ex -> {
@@ -120,9 +126,5 @@ public class RaynetService {
 
             return response;
         });
-    }
-
-    private ClientRequestDTO mapToClientRequestDTO(Company company) {
-        return new ClientRequestDTO(company.getTitle(), "A", "A_POTENTIAL", "B_PARTNER", company.getRegistrationNumber());
     }
 }
