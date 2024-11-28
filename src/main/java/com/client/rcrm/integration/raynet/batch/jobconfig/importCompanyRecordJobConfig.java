@@ -1,8 +1,8 @@
 package com.client.rcrm.integration.raynet.batch.jobconfig;
 
-import com.client.rcrm.integration.raynet.batch.company.dao.CrudPaginationDAO;
 import com.client.rcrm.integration.raynet.batch.company.dto.CompanyDTO;
 import com.client.rcrm.integration.raynet.batch.company.entity.Company;
+import com.client.rcrm.integration.raynet.batch.company.repository.CompanyRepository;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidEmailException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidPhoneNumberException;
 import com.client.rcrm.integration.raynet.batch.exception.InvalidRegistrationNumberException;
@@ -37,15 +37,15 @@ public class importCompanyRecordJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final ValidationService validationService;
-    private final CrudPaginationDAO<?> companyDAO;
+    private final CompanyRepository companyRepository;
 
     public importCompanyRecordJobConfig(JobRepository jobRepository,
                                         PlatformTransactionManager platformTransactionManager,
-                                        ValidationService validationService, CrudPaginationDAO<?> companyDAO) {
+                                        ValidationService validationService, CompanyRepository companyRepository) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.validationService = validationService;
-        this.companyDAO = companyDAO;
+        this.companyRepository = companyRepository;
     }
 
     @Bean
@@ -70,7 +70,7 @@ public class importCompanyRecordJobConfig {
 
     @Bean(name = "writer")
     public ItemWriter<Company> writer() {
-        return new CompanyRecordItemWriter(companyDAO);
+        return new CompanyRecordItemWriter(companyRepository);
     }
 
 
