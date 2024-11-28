@@ -1,4 +1,4 @@
-package com.client.rcrm.integration.raynet.batch.jobcontroller;
+package com.client.rcrm.integration.raynet.batch.controller;
 
 import com.client.rcrm.integration.raynet.batch.validation.ValidationService;
 import com.client.rcrm.integration.raynet.connector.rcrmconnector.RaynetService;
@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/host/uploadData")
@@ -45,10 +44,6 @@ public class ImportController {
         JobExecution run;
 
         try {
-            Path targetDir = Paths.get("src/main/resources/data");
-            if (!Files.exists(targetDir)) {
-                Files.createDirectories(targetDir);
-            }
             Path tempFile = Files.createTempFile("upload-", "-" + file.getOriginalFilename());
             file.transferTo(tempFile.toFile());
 
@@ -56,7 +51,6 @@ public class ImportController {
                     .addLong("startAt", System.currentTimeMillis())
                     .addString("input.file", tempFile.toAbsolutePath().toString())
                     .toJobParameters();
-
 
             run = jobLauncher.run(this.job, jobParameters);
             if("COMPLETED".equalsIgnoreCase(run.getStatus().toString())){

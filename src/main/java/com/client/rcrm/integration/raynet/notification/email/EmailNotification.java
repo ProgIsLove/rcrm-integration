@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-@Service("EmailWithAttachmentNotification")
-public class EmailWithAttachmentNotification implements NotificationStrategy {
+@Component
+public class EmailNotification implements NotificationStrategy {
 
     private final JavaMailSender javaMailSender;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -30,7 +30,7 @@ public class EmailWithAttachmentNotification implements NotificationStrategy {
     @Value("${raynet.username}")
     private String recipient;
 
-    public EmailWithAttachmentNotification(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+    public EmailNotification(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
     }
@@ -48,12 +48,10 @@ public class EmailWithAttachmentNotification implements NotificationStrategy {
             try (InputStream inputStream = classPathResource.getInputStream()) {
                 NotificationDetails notificationDetails = objectMapper.readValue(inputStream, NotificationDetails.class);
 
-                // Set email details
                 mimeMessageHelper.setFrom(sender);
                 mimeMessageHelper.setTo(recipient);
                 mimeMessageHelper.setSubject(notificationDetails.getSubject());
 
-                // Set the content using Thymeleaf templates
                 Context context = new Context();
                 context.setVariable("username", recipient);
                 context.setVariable("content", notificationDetails.getMsgBody());
@@ -61,7 +59,6 @@ public class EmailWithAttachmentNotification implements NotificationStrategy {
                 String processedString = templateEngine.process("mail_template", context);
                 mimeMessageHelper.setText(processedString, true);
 
-                // Send email
                 javaMailSender.send(mimeMessage);
             }
 
